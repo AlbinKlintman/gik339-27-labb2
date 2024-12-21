@@ -14,7 +14,6 @@ server
  });
 
  server.get("/users", (req, res) => {
-  res.send("Welcome to the server!");
   const db = new sqlite3.Database("./gik339-labb2.db", (err) => {
     if (err) {
       console.error("Error connecting to the database:", err.message);
@@ -32,7 +31,7 @@ server
       return;
     }
 
-    res.json(rows);
+    res.send(rows);
   });
 
   db.close((err) => {
