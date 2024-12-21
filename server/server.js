@@ -1,5 +1,6 @@
 const express = require("express");
 const server = express();
+const sqlite3 = require("sqlite3").verbose();
 console.log('början av veb severn');
 server
  .use(express.json())
@@ -12,17 +13,35 @@ server
   next();
  });
 
- server.listen(3000, () =>
-  console.log('running server on http://localhost:3000') 
- );
-
  server.get("/users", (req, res) => {
-  const db = new sqlite3.Database('./gik339-labb2.db');
+  res.send("Welcome to the server!");
+  const db = new sqlite3.Database("./gik339-labb2.db", (err) => {
+    if (err) {
+      console.error("Error connecting to the database:", err.message);
+      res.status(500).send({ error: "Failed to connect to the database." });
+      return;
+    }
+  });
+
+  db.all("SELECT * FROM users", (err, rows) => {
+    if (err) {
+      console.error("Error executing SQL query:", err.message);
+      res
+        .status(500)
+        .send({ error: "Failed to fetch data from the database." });
+      return;
+    }
+
+    res.json(rows);
+  });
+
+  db.close((err) => {
+    if (err) {
+      console.error("Error closing the database connection:", err.message);
+    }
+  });
  });
 
- const sqlite3 = require("sqlite3").verbose();
-
- db.all('SELECT * FROM USERS', (err, rows) => {
-  res.status(500).send(err);
-  res.send(rows);
+ server.listen(3000, () => {
+   console.log("Running server on http://localhost:3000");
  });
