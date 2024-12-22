@@ -1,7 +1,6 @@
 const express = require("express");
 const server = express();
 const sqlite3 = require("sqlite3").verbose();
-console.log('början av veb severn');
 server
  .use(express.json())
  .use(express.urlencoded({ extended: false }))
